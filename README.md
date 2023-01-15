@@ -14,6 +14,8 @@ In this mode, the computer will rapidly simulate a chess game between black, whi
 
 In this mode, you play as black. To perform a move, you must input the beginning and ending position of the move to the command line. For example, to move from a7 to a6, enter "a7 a6". Note that queen promition is supported, but other special chess moves (castling, en passant) aren't yet. Every time a move is performed, a plain-text representation of the board is printed out (see photo below). All the pieces are abbreviated to two letters, so, for example, 'black queen' becomes 'bq', and an 'x' represents a free space.  
 
+![Screenshot](chessboard.png)
+
 
 
 
