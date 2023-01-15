@@ -1,6 +1,6 @@
 ## Chess-Engine
 
-#*This project is still in its very early stages. As it stands, this chess engine is about as good as someone who has only played a few games of chess*
+# *This project is still in its very early stages. As it stands, this chess engine is about as good as someone who has only played a few games of chess*
 
 To try the program, run ChessEngine.py with the command line argument "py .\ChessEngine.py [parameter]", replacing "[parameter]" with either "botvbot" for the computer to simulate an entire chess game, or "botvhuman" to play against the bot. 
 
