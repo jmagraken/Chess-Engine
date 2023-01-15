@@ -1,14 +1,19 @@
 import random
 import sys
 
-board = [['wr', 'wb', 'wh', 'wk', 'wq', 'wh', 'wb', 'wr'], ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'], ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'], ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'], ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'], ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'], ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'], ['br', 'bb', 'bh', 'bk', 'bq', 'bh', 'bb', 'br']]
-wkingPos = [3, 0]
-bkingPos = [3, 7]
+board = [['wr', 'wh', 'wb', 'wq', 'wk', 'wb', 'wh', 'wr'], ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'], ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'], ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'], ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'], ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'], ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'], ['br', 'bh', 'bb', 'bq', 'bk', 'bb', 'bh', 'br']]
+wkingPos = [4, 0]
+bkingPos = [4, 7]
 val = {'bp': 1, 'wp': 1, 'bh': 3, 'wh': 3, 'bb': 3, 'wb': 3, 'br': 4, 'wr': 4, 'bq': 5, 'wq': 5, 'wk': 5, 'bk': 5, 'x': 0}
 
 def printBoard(board):
     for i in range(7, -1, -1):
         print(f'{board[i][0].ljust(2)} {board[i][1].ljust(2)} {board[i][2].ljust(2)} {board[i][3].ljust(2)} {board[i][4].ljust(2)} {board[i][5].ljust(2)} {board[i][6].ljust(2)} {board[i][7].ljust(2)}')
+
+def printBoardRotate(board):
+    for i in range(0, 8):
+        print(f'{board[i][7].ljust(2)} {board[i][6].ljust(2)} {board[i][5].ljust(2)} {board[i][4].ljust(2)} {board[i][3].ljust(2)} {board[i][2].ljust(2)} {board[i][1].ljust(2)} {board[i][0].ljust(2)}', i + 1)
+    print("h  g  f  e  d  c  b  a")
 
 def queen1(pos, fin):
      if pos[0] == fin[0] or pos[1] == fin[1]:
@@ -221,12 +226,11 @@ def randMoveBlack():
 def randMoveWhite():
     global board
     global wkingPos
-    successes = 0
     newBoard = copyBoard(board)
     newWKP = wkingPos.copy()
     bestBoard = newBoard
     bestkingPos = newWKP
-    topScore = -5
+    topScore = -1
     for i in range(8):
         for j in range(8):
             if board[j][i][0] != 'w':
@@ -254,9 +258,10 @@ def randMoveWhite():
                         topScore = points
                         bestBoard = board
                         bestkingPos = wkingPos
-                    successes += 1
     board = bestBoard
     wkingPos = bestkingPos
+    if topScore == -1:
+        randMoveWhite()
     
     
 
@@ -273,13 +278,13 @@ def main(gamemode):
     elif gamemode == "botvhuman":
         while True:
             randMoveWhite()
-            printBoard(board)
+            printBoardRotate(board)
             print('/' * 50)
             move = input()
-            while not pieceswap([move[0], int(move[2])], [move[4], int(move[6])]):
+            while not pieceswap([move[0], int(move[1])], [move[3], int(move[4])]):
                 print("INVALID MOVE")
                 move = input()
-            printBoard(board)
+            printBoardRotate(board)
             print('/' * 50)
 
    
