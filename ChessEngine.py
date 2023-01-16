@@ -198,6 +198,69 @@ def copyBoard(board):
     return newBoard
 
 
+def getPossibleMoves(loc1, loc2):
+    global board
+    retVal = []
+    if board[loc2][loc1][1] == 'k' or board[loc2][loc1][1] == 'p':
+        for i in [-1, 0, 1]:
+            for j in [-1, 0, 1]:
+                if loc1 + i < 8 and loc1 + i >= 0 and loc2 + j < 8 and loc2 + j >= 0:
+                    retVal.append([loc1 + i, loc2 + j])
+    elif board[loc2][loc1][1] == 'q':
+        for i in range(-loc1, 8 - loc1):
+            retVal.append([loc1 + i, loc2])
+        for j in range(-loc2, 8 - loc2):
+            retVal.append([loc1, loc2 + j])
+        i = 1
+        while loc1 + i < 8 and loc2 + i < 8:
+            retVal.append([loc1 + i, loc2 + i])
+            i+=1
+        i = 1
+        while loc1 + i < 8 and loc2 - i >= 0:
+            retVal.append([loc1 + i, loc2 - i])
+            i+=1
+        i = 1
+        while loc1 - i >= 0 and loc2 + i < 8:
+            retVal.append([loc1 - i, loc2 + i])
+            i+=1
+        i = 1
+        while loc1 - i >= 0 and loc2 - i >= 0:
+            retVal.append([loc1 - i, loc2 - i])
+            i+=1
+    elif board[loc2][loc1][1] == 'r':
+        for i in range(-loc1, 8 - loc1):
+            retVal.append([loc1 + i, loc2])
+        for j in range(-loc2, 8 - loc2):
+            retVal.append([loc1, loc2 + j])
+    elif board[loc2][loc1][1] == 'b':
+        i = 1
+        while loc1 + i < 8 and loc2 + i < 8:
+            retVal.append([loc1 + i, loc2 + i])
+            i+=1
+        i = 1
+        while loc1 + i < 8 and loc2 - i >= 0:
+            retVal.append([loc1 + i, loc2 - i])
+            i+=1
+        i = 1
+        while loc1 - i >= 0 and loc2 + i < 8:
+            retVal.append([loc1 - i, loc2 + i])
+            i+=1
+        i = 1
+        while loc1 - i >= 0 and loc2 - i >= 0:
+            retVal.append([loc1 - i, loc2 - i])
+            i+=1
+    elif board[loc2][loc1][1] == 'h':
+        for i in [-2, -1, 1, 2]:
+            for j in [-2, -1, 1, 2]:
+                if abs(i) + abs(j) == 3 and loc1 + i < 8 and loc1 + i >= 0 and loc2 + j < 8 and loc2 + j >= 0:
+                    retVal.append([loc1 + i, loc2 + j])
+    return retVal
+
+                    
+        
+        
+
+
 def randMoveBlack():
     global board
     global bkingPos
@@ -223,6 +286,28 @@ def randMoveBlack():
                 continue
             break
 
+def responseMoveBlack():
+    global board
+    topScore = -100
+    for i in range(8):
+        for j in range(8):
+            if board[j][i][0] != 'b':
+                continue
+            for k in getPossibleMoves(i, j):
+                one = i
+                two = j
+                three = k[0]
+                four = k[1]
+                firstLoc = [one, two]
+                secondLoc = [three, four]
+                if isValid(firstLoc, secondLoc, False):
+                    points = val[board[four][three]]
+                    if points >= topScore:
+                        topScore = points
+    return topScore
+
+
+
 def randMoveWhite():
     global board
     global wkingPos
@@ -230,18 +315,22 @@ def randMoveWhite():
     newWKP = wkingPos.copy()
     bestBoard = newBoard
     bestkingPos = newWKP
-    topScore = -1
-    for i in range(8):
-        for j in range(8):
+    topScore = -10
+    list1 = [0, 1, 2, 3, 4, 5, 6, 7]
+    list2 = [0, 1, 2, 3, 4, 5, 6, 7]
+    random.shuffle(list1)
+    random.shuffle(list2)
+    for i in list1:
+        for j in list2:
             if board[j][i][0] != 'w':
                 continue
-            for k in range(10):
+            for k in getPossibleMoves(i, j):
                 board = copyBoard(newBoard)
                 wkingPos = newWKP.copy()
                 one = i
                 two = j
-                three = random.randint(0, 7)
-                four = random.randint(0, 7)
+                three = k[0]
+                four = k[1]
                 firstLoc = [one, two]
                 secondLoc = [three, four]
                 if isValid(firstLoc, secondLoc, False):
@@ -250,10 +339,14 @@ def randMoveWhite():
                     board[two][one] = 'x'
                     if board[four][three] == 'wp' and four == 7:
                         board[four][three] = 'wq'
+                        points += 5
                     if board[four][three] == 'wk':
                         wkingPos = secondLoc
                     if isInCheck('w'):
                         continue
+                    if isInCheck('b'):
+                        points += 3
+                    points -= responseMoveBlack()
                     if points >= topScore:
                         topScore = points
                         bestBoard = board
